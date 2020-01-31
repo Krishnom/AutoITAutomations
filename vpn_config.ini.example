@@ -1,0 +1,12 @@
+[ALL]
+username=
+password=
+
+#Passcode pin. Passcode app must be installed and configured on your system.
+passcode_pin=
+
+#URL of vpn server
+url=
+
+#Registered mobile number. This is used if SecureAuth app is configured on your mobile for 2FA
+registered_mobile_num=

@@ -1,5 +1,5 @@
 ; Script to connect to VPN with Cisco AnyConnect VPN client
-;Update your username, password and registeredMobileName(for 2fa)
+;Update config file path. See example vpn_config.ini.example.
 ;If using cisco passcode app than install and register for passcode authentication
 
 #include <MsgBoxConstants.au3>
@@ -7,23 +7,34 @@
 
 ;START
 
-Local $username = ''
-Local $password = ''
-Local $passcodePin = ""
-Local $connectURL = ''
-Local $registeredMobileName = ''
+Local $config = "D:\workspace\learnings\autoit-v3\config\vpn_config.ini"
+Local $username = IniRead($config, "ALL", "username",Null)
+;~ ConsoleWrite($username & @CRLF);
+Local $password = IniRead($config, "ALL", "password",Null)
+;~ ConsoleWrite($password & @CRLF);
+Local $passcodePin = IniRead($config, "ALL", "passcode_pin",Null)
+;~ ConsoleWrite($passcodePin & @CRLF);
+Local $connectURL = IniRead($config, "ALL", "url",Null)
+;~ ConsoleWrite($connectURL & @CRLF);
+Local $registeredMobileName = IniRead($config, "ALL", "registered_mobile_num",Null)
+;~ ConsoleWrite($registeredMobileName & @CRLF);
+
 Local $anyConnectWinName = 'Cisco AnyConnect Secure Mobility Client'
-Local $vpnuiExe = '/c/Program Files (x86)/Cisco/Cisco AnyConnect Secure Mobility Client/vpnui.exe'
-;ConsoleWrite ( "Using username " & $username & @CRLF)
-;ConsoleWrite ( "Using username " & $password & @CRLF)
+Local $vpnuiExe = "C:\Program Files (x86)\Cisco\Cisco AnyConnect Secure Mobility Client\vpnui.exe"
 
 If Not WinExists($anyConnectWinName, "disconnect") Then
-Run($vpnuiExe)
-WinWaitActive($anyConnectWinName)
-
-WinWaitActive($vpnuiExe, "Connect")
-Send("{ENTER}")
+	;~ ConsoleWrite("Running " & $vpnuiExe & @CRLF)
+	Run($vpnuiExe)
+	;~ ConsoleWrite("Waiting for vpnui to open" &  @CRLF)
+	WinWaitActive($anyConnectWinName)
+	ControlClick($anyConnectWinName, "", "[CLASS:Button; TEXT:Connect; INSTANCE:1]")
+	;~ Send("{ENTER}")
+Else
+	ConsoleWrite("VPN is already connected")
+	Exit
 EndIf
+
+;~ ConsoleWrite("Connecting..." & @CRLF)
 
 WinWaitActive("Cisco AnyConnect | " & $connectURL)
 ControlFocus("Cisco AnyConnect | " & $connectURL, "Password:", "")
@@ -37,9 +48,11 @@ WinWaitActive("Cisco AnyConnect | " & $connectURL)
 authenticateUsingPasscodeApp($passcodePin)
 ; authenticateOnMobile($connectURL, $registeredMobileName)
 
-Sleep(10000)
+Sleep(5000)
 WinWaitActive("Cisco AnyConnect")
-If Not WinActive("Cisco AnyConnect") Then WinActivate("Cisco AnyConnect")
+If Not WinActive("Cisco AnyConnect") Then 
+	WinActivate("Cisco AnyConnect")
+EndIf
 ControlClick("Cisco AnyConnect", "", "[CLASS:Button; TEXT:Accept; INSTANCE:1]")
 Exit
 
@@ -61,6 +74,7 @@ Func authenticateUsingPasscodeApp($pincode)
 
 	; Click at the 518,142 position (click "copy" button)
 	If Not WinActive("Passcode") Then WinActivate("Passcode")
+	
 	MouseClick($MOUSE_CLICK_LEFT, 853, 249, 1)
 
 	Sleep(1000) ; sleep a second to clip to be updated

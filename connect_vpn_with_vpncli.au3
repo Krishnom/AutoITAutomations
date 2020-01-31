@@ -1,6 +1,6 @@
 #include <AutoItConstants.au3>
 
-
+;This is not fully functional. 
 ;Make sure that no cli is already running
 $list = ProcessList("vpncli.exe")
 for $i = 1 to $list[0][0]
