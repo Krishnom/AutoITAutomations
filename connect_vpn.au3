@@ -7,7 +7,7 @@
 
 ;START
 
-Local $config = "D:\workspace\learnings\autoit-v3\config\vpn_config.ini"
+Local $config = "D:\Path\To\Config\vpn_config.ini"
 Local $username = IniRead($config, "ALL", "username",Null)
 ;~ ConsoleWrite($username & @CRLF);
 Local $password = IniRead($config, "ALL", "password",Null)
@@ -27,6 +27,9 @@ If Not WinExists($anyConnectWinName, "disconnect") Then
 	Run($vpnuiExe)
 	;~ ConsoleWrite("Waiting for vpnui to open" &  @CRLF)
 	WinWaitActive($anyConnectWinName)
+
+	;Wait for 2 more seconds to Let windows appear 
+	Sleep(2000)
 	ControlClick($anyConnectWinName, "", "[CLASS:Button; TEXT:Connect; INSTANCE:1]")
 	;~ Send("{ENTER}")
 Else
@@ -53,6 +56,7 @@ WinWaitActive("Cisco AnyConnect")
 If Not WinActive("Cisco AnyConnect") Then 
 	WinActivate("Cisco AnyConnect")
 EndIf
+
 ControlClick("Cisco AnyConnect", "", "[CLASS:Button; TEXT:Accept; INSTANCE:1]")
 Exit
 
